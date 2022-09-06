@@ -1,55 +1,95 @@
 package ru.netology.javaqa;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-class RadioTest {
+public class TestRadio {
+    Radio radio = new Radio();
 
-    @Test
-    public void testNextStation() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(7);
-        radio.next();
+    @ParameterizedTest
+    @CsvFileSource(files = "src/test/resources/Station.csv")
+    public void shouldSetCurrentStation(int currentStation, int expected) {
 
-        int expected = 8;
+        radio.setCurrentStation(currentStation);
+
+        int actual = radio.getCurrentStation();
+
+        Assertions.assertEquals(actual, expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "3,4",
+            "9,0",
+            "0,1"
+    })
+    public void shouldSetNextStation(int currentStation, int expected) {
+
+        radio.setCurrentStation(currentStation);
+        radio.nextStation();
+
+        int actual = radio.getCurrentStation();
+
+        Assertions.assertEquals(actual, expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "0,9",
+            "5,4",
+            "9,8"
+    })
+    public void shouldSetPrevStation(int currentStation, int expected) {
+
+        radio.setCurrentStation(currentStation);
+        radio.prevStation();
+
         int actual = radio.getCurrentStation();
 
         Assertions.assertEquals(expected, actual);
     }
 
-    public void testPrevStation() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(5);
-        radio.prev();
+    @ParameterizedTest
+    @CsvFileSource(files = "src/test/resources/Volume.csv")
+    public void shouldSetCurrentVolume(int currentVolume, int expected) {
 
-        int expected = 4;
-        int actual = radio.getCurrentStation();
+        radio.setCurrentVolume(currentVolume);
 
-        Assertions.assertEquals(expected, actual);
-    }
-
-    public void testPrevVolume() {
-        Radio radio = new Radio();
-        radio.setCurrentVolume(5);
-        radio.prev();
-
-        int expected = 4;
         int actual = radio.getCurrentVolume();
 
         Assertions.assertEquals(expected, actual);
     }
 
-    public void testNextVolume() {
-        Radio radio = new Radio();
-        radio.setCurrentVolume(7);
-        radio.next();
+    @ParameterizedTest
+    @CsvSource({
+            "5,6",
+            "10,10",
+            "11,1"
+    })
+    public void shouldSetVolumeUp(int currentVolume, int expected) {
+        radio.setCurrentVolume(currentVolume);
+        radio.volumeUp();
 
-        int expected = 8;
         int actual = radio.getCurrentVolume();
 
         Assertions.assertEquals(expected, actual);
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "8,7",
+            "0,0",
+            "-1,0"
+    })
+    public void shouldSetVolumeDown(int currentVolume, int expected) {
+        radio.setCurrentVolume(currentVolume);
+        radio.volumeDown();
+
+        int actual = radio.getCurrentVolume();
+
+        Assertions.assertEquals(expected, actual);
+    }
 }
